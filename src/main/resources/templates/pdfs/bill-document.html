@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Bill Document</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+    <style id="base">
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 10pt;
+            margin: 0;
+            padding: 0;
+        }
+
+        p {
+            margin: 0;
+        }
+
+        span {
+            margin: 0;
+        }
+
+        p li, ul li, ol li {
+            list-style-position: outside;
+        }
+
+        table {
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+        table td {
+            vertical-align: top;
+        }
+
+        a {
+            color: black;
+            text-decoration: none
+        }
+
+        hr {
+            border: 0;
+            border-bottom: 1px solid #f6f6f6;
+            margin: 20px 0
+        }
+
+        small {
+            font-size: 9pt;
+        }
+
+        section {
+            margin-bottom: 2.2em;
+        }
+
+        section:last-child {
+            margin-bottom: 0;
+        }
+    </style>
+
+    <style>
+
+        @page {
+            size: a4;
+            margin-top: 0;
+            margin-left: 0;
+
+            @top-left {
+                content: element(header);
+            }
+
+            /*@bottom-right {*/
+            /*    content: 'P. ' counter(page) ' di ' counter(pages);*/
+            /*    font-family: Arial, sans-serif;*/
+            /*    font-size: 7pt;*/
+            /*    line-height: 1.28;*/
+            /*    text-align: right;*/
+            /*}*/
+        }
+
+        .main-content {
+            margin-top: 300px;
+            margin-left: 50px;
+        }
+
+        .header-content {
+            margin-top: 250px;
+            margin-left: 50px;
+        }
+
+        header {
+            margin: 0;
+            padding: 0;
+        }
+
+        header#header {
+            margin-top: 70px;
+            height: 160px;
+            max-height: 160px;
+            width: 100%;
+            max-width: 100%;
+            font-size: 9pt;
+        }
+
+        header#header > table {
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 0;
+        }
+
+        .logo-column {
+            padding-right: 1cm;
+        }
+
+        #sender {
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        .logo {
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .logo-container {
+            float: left;
+        }
+
+        .crop > img {
+            max-height: 2cm;
+            max-width: 5cm;
+            height: auto;
+            width: auto;
+        }
+
+        #recipient.modal {
+            margin: 0;
+            padding: 0;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            /*background-color: rgb(0, 0, 0); !* Fallback color *!*/
+            /*background-color: rgba(0, 0, 0, 0.4); !* Black w/ opacity *!*/
+        }
+
+        #recipient > .modal-content {
+            background-color: #fefefe;
+            margin-left: 12cm;
+            margin-top: 6.2cm;
+            /*border: 1px solid #888;*/
+            width: 7.5cm;
+            height: 2.3cm;
+        }
+
+        #text {
+            /*white-space: pre-line;*/
+            text-align: justify;
+        }
+
+        #signature {
+            margin-left: 0;
+            margin-right: 0;
+            padding-left: 0;
+            padding-right: 0;
+            margin-bottom: 4.5em;
+        }
+
+        #signature > table {
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .signature-col {
+            width: 50%;
+            max-width: 50%;
+            text-align: center;
+        }
+
+        #closure {
+            text-align: center;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<header id="header" style="position: running(header)">
+    <div class="header-content">
+        <table>
+            <tr>
+                <th:block th:if="${not #strings.isEmpty(logoBase64)}">
+                    <td class="logo-column">
+                        <div class="logo-container">
+                            <div class="logo" th:if="${#strings.isEmpty(document.senderWebsite)}">
+                                <div class="crop">
+                                    <img th:src="${logoBase64}" alt="Business Logo">
+                                </div>
+                            </div>
+                            <div th:unless="${#strings.isEmpty(document.senderWebsite)}">
+                                <a class="logo" th:href="${document.senderWebsite}">
+                                    <div class="crop">
+                                        <img th:src="${logoBase64}" alt="Business Logo">
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </td>
+                </th:block>
+                <td id="sender">
+                    <span th:if="${#strings.isEmpty(document.senderWebsite)}"
+                          th:text="${document.senderName}"></span>
+                    <a th:unless="${#strings.isEmpty(document.senderWebsite)}" th:href="${document.senderWebsite}"
+                       th:text="${document.senderName}"></a>
+                    <div th:if="${not #strings.isEmpty(document.oneLineSenderAddress())}">
+                        <th:block th:text="${document.oneLineSenderAddress()}"/>
+                    </div>
+                    <div>
+                            <span th:if="${not #strings.isEmpty(document.senderWebsite)}">
+                                <a th:href="${document.senderWebsite}"
+                                   th:text="${document.senderWebsite}"></a>
+                                    <span th:if="${not #strings.isEmpty(document.senderEmail)}"> - </span>
+                            </span>
+                        <span th:if="${not #strings.isEmpty(document.senderEmail)}"><a
+                                th:href="|mailto:${document.senderEmail}|"
+                                th:text="${document.senderEmail}"></a></span>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="recipient" class="modal">
+        <div class="modal-content">
+            <div th:text="${document.recipientName}"></div>
+            <div th:text="${document.recipientStreet}"></div>
+            <div th:text="${document.recipientLocality}"></div>
+            <div th:if="${not #strings.isEmpty(document.recipientCountry)}"
+                 th:text="${document.recipientCountry}"></div>
+        </div>
+    </div>
+</header>
+
+<div class="main-content">
+    <section>
+        <span th:text="${document.salutation}"></span>
+    </section>
+
+    <section>
+        <p id="text" th:utext="${document.text}"></p>
+    </section>
+
+    <section id="signature"
+             th:if="${not #strings.isEmpty(document.signatureName1) || not #strings.isEmpty(document.signatureName2)}">
+        <table>
+            <tr>
+                <td class="signature-col"
+                    th:if="${!document.showAllSignatures()}"></td>
+                <td class="signature-col" th:if="${document.showSignature1()}">
+                    <div th:if="${not #strings.isEmpty(document.signatureTitle1)}"
+                         th:text="${document.signatureTitle1}">
+                    </div>
+                    <div th:if="${not #strings.isEmpty(document.signatureName1)}"
+                         th:text="${document.signatureName1}">
+                    </div>
+                </td>
+                <td class="signature-col" th:if="${document.showSignature2()}">
+                    <div th:if="${not #strings.isEmpty(document.signatureTitle2)}"
+                         th:text="${document.signatureTitle2}">
+                    </div>
+                    <div th:if="${not #strings.isEmpty(document.signatureName2)}"
+                         th:text="${document.signatureName2}">
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </section>
+
+    <section id="closure" th:if="${not #strings.isEmpty(document.closure)}">
+        <span><strong th:text="${document.closure}"></strong></span>
+    </section>
+</div>
+</body>
+</html>
+
