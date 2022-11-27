@@ -1,0 +1,12 @@
+version: "3.9"
+services:
+  swiss-qr-bill-generator:
+    build: .
+    image: swiss-qr-bill-generator # To use the image hosted on dockerhub prepend 'dafo90/'
+    environment:
+      - "TZ=Europe/Zurich"
+      - "JAVA_OPTS=-XX:+UseZGC -Xmx4096m"
+    ports:
+      - "80:8080"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
