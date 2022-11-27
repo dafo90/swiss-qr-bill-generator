@@ -65,7 +65,7 @@ public class RequestLoggingFilterConfig {
                     .filter(exclusion -> request.getRequestURI().contains(exclusion))
                     .findFirst()
                     .map(exclusion -> false)
-                    .orElseGet(() -> log.isDebugEnabled());
+                    .orElseGet(log::isDebugEnabled);
         }
 
         @Override

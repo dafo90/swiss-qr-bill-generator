@@ -9,10 +9,10 @@ import org.mapstruct.MappingConstants;
 import java.util.List;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, builder = @Builder(disableBuilder = true))
-public abstract class FieldMapper {
+public interface FieldMapper {
 
-    public abstract Field toField(FieldProperties fieldProperties);
+    Field toField(FieldProperties fieldProperties);
 
-    public abstract List<Field> toFields(List<FieldProperties> fieldPropertiesList);
+    List<Field> toFields(List<FieldProperties> fieldPropertiesList);
 
 }

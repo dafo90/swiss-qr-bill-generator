@@ -134,7 +134,7 @@ public class BillDocumentMapper {
         return bill;
     }
 
-    private String generateBillFileName(String debtorName, String reference) {
+    protected String generateBillFileName(String debtorName, String reference) {
         if (StringUtils.hasText(reference)) {
             return String.format("%s_%s_%d.pdf", debtorName.replace(" ", "-"), reference, new Date().getTime());
         }
