@@ -19,43 +19,42 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
 public class BillDocumentMapper {
 
-    // Bill
-    private static final String ACCOUNT = "account";
-    private static final String AMOUNT = "amount";
-    private static final String CURRENCY = "currency";
-    private static final String LANGUAGE = "language";
-    private static final String REFERENCE = "reference";
-    private static final String UNSTRUCTURED_MESSAGE = "unstructuredMessage";
-
     // Document
-    private static final String SALUTATION = "salutation";
-    private static final String TEXT = "text";
-    private static final String SIGNATURE_TITLE_1 = "signatureTitle1";
-    private static final String SIGNATURE_NAME_1 = "signatureName1";
-    private static final String SIGNATURE_TITLE_2 = "signatureTitle2";
-    private static final String SIGNATURE_NAME_2 = "signatureName2";
-    private static final String CLOSURE = "closure";
+    public static final String SALUTATION = "salutation";
+    public static final String TEXT = "text";
+    public static final String SIGNATURE_TITLE_1 = "signatureTitle1";
+    public static final String SIGNATURE_NAME_1 = "signatureName1";
+    public static final String SIGNATURE_TITLE_2 = "signatureTitle2";
+    public static final String SIGNATURE_NAME_2 = "signatureName2";
+    public static final String CLOSURE = "closure";
+
+    // Bill
+    public static final String ACCOUNT = "account";
+    public static final String AMOUNT = "amount";
+    public static final String CURRENCY = "currency";
+    public static final String LANGUAGE = "language";
+    public static final String REFERENCE = "reference";
+    public static final String UNSTRUCTURED_MESSAGE = "unstructuredMessage";
 
     // Creditor
-    private static final String CREDITOR_NAME = "creditorName";
-    private static final String CREDITOR_STREET = "creditorStreet";
-    private static final String CREDITOR_LOCALITY = "creditorLocality";
-    private static final String CREDITOR_COUNTRY = "creditorCountry";
-    private static final String CREDITOR_EMAIL = "creditorEmail";
-    private static final String CREDITOR_WEBSITE = "creditorWebsite";
-    private static final String CREDITOR_PHONE_NUMBER = "creditorPhoneNumber";
+    public static final String CREDITOR_NAME = "creditorName";
+    public static final String CREDITOR_STREET = "creditorStreet";
+    public static final String CREDITOR_LOCALITY = "creditorLocality";
+    public static final String CREDITOR_COUNTRY = "creditorCountry";
+    public static final String CREDITOR_EMAIL = "creditorEmail";
+    public static final String CREDITOR_WEBSITE = "creditorWebsite";
+    public static final String CREDITOR_PHONE_NUMBER = "creditorPhoneNumber";
 
     // Debtor
-    private static final String DEBTOR_NAME = "debtorName";
-    private static final String DEBTOR_STREET = "debtorStreet";
-    private static final String DEBTOR_LOCALITY = "debtorLocality";
-    private static final String DEBTOR_COUNTRY = "debtorCountry";
+    public static final String DEBTOR_NAME = "debtorName";
+    public static final String DEBTOR_STREET = "debtorStreet";
+    public static final String DEBTOR_LOCALITY = "debtorLocality";
+    public static final String DEBTOR_COUNTRY = "debtorCountry";
 
     private final AppProperties appProperties;
 
@@ -87,6 +86,18 @@ public class BillDocumentMapper {
     }
 
     public PdfBill toPdfBill(byte[] pdfDocument, Map<String, String> row, Map<String, FieldMap> fieldsMap) {
+        Bill bill = buildBill(row, fieldsMap);
+
+        // Append QR bill
+        try (PDFCanvas canvas = new PDFCanvas(pdfDocument, PDFCanvas.LAST_PAGE)) {
+            QRBill.draw(bill, canvas);
+            return PdfBill.builder().pdf(canvas.toByteArray()).fileName(generateBillFileName(bill.getDebtor().getName(), bill.getReference())).build();
+        } catch (IOException ex) {
+            throw new RuntimeException("Cannot add QR bill to document", ex);
+        }
+    }
+
+    protected Bill buildBill(Map<String, String> row, Map<String, FieldMap> fieldsMap) {
         // Setup bill
         Bill bill = new Bill();
         bill.setAccount(getField(ACCOUNT, row, fieldsMap));
@@ -102,8 +113,7 @@ public class BillDocumentMapper {
         bill.setCreditor(creditor);
 
         // More bill data
-        String reference = Optional.ofNullable(getField(REFERENCE, row, fieldsMap)).map(ref -> ref.replace(" ", "")).orElse(null);
-        bill.setReference(reference);
+        bill.setReference(getField(REFERENCE, row, fieldsMap));
         bill.setUnstructuredMessage(getField(UNSTRUCTURED_MESSAGE, row, fieldsMap));
 
         // Set debtor
@@ -121,13 +131,7 @@ public class BillDocumentMapper {
         format.setOutputSize(OutputSize.QR_BILL_ONLY);
         format.setLanguage(Language.valueOf(getField(LANGUAGE, row, fieldsMap)));
 
-        // Append QR bill
-        try (PDFCanvas canvas = new PDFCanvas(pdfDocument, PDFCanvas.LAST_PAGE)) {
-            QRBill.draw(bill, canvas);
-            return PdfBill.builder().pdf(canvas.toByteArray()).fileName(generateBillFileName(debtorName, reference)).build();
-        } catch (IOException ex) {
-            throw new RuntimeException("Cannot add QR bill to document", ex);
-        }
+        return bill;
     }
 
     private String generateBillFileName(String debtorName, String reference) {
@@ -137,7 +141,7 @@ public class BillDocumentMapper {
         return String.format("%s_%d.pdf", debtorName.replace(" ", "-"), new Date().getTime());
     }
 
-    private String getField(String fieldName, Map<String, String> row, Map<String, FieldMap> fieldsMap) {
+    protected String getField(String fieldName, Map<String, String> row, Map<String, FieldMap> fieldsMap) {
         FieldMap fieldMap = fieldsMap.get(fieldName);
         if (fieldMap == null) {
             throw new ValidationException(String.format("Field '%s' not mapped", fieldName));
@@ -148,7 +152,7 @@ public class BillDocumentMapper {
         return value;
     }
 
-    private String getValue(String value, String staticValue, String defaultValue) {
+    protected String getValue(String value, String staticValue, String defaultValue) {
         if (StringUtils.hasText(value)) {
             return value.trim();
         }
@@ -162,7 +166,12 @@ public class BillDocumentMapper {
     }
 
     private FieldProperties getFieldPropertiesByName(String fieldName) {
-        return appProperties.groups().stream().map(GroupProperties::fields).flatMap(List::stream).filter(field -> field.name().equals(fieldName)).findFirst().orElseThrow(() -> new RuntimeException(String.format("Field '%s' not configured in application.yml", fieldName)));
+        return appProperties.groups().stream()
+                .map(GroupProperties::fields)
+                .flatMap(List::stream)
+                .filter(field -> field.name().equals(fieldName))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException(String.format("Field '%s' not configured in application.yml", fieldName)));
     }
 
     public String sanitizeValue(String value, FieldType fieldType) {
@@ -170,11 +179,10 @@ public class BillDocumentMapper {
             return null;
         }
         return switch (fieldType) {
-            case IBAN, EMAIL, URL -> value.replace(" ", "").toUpperCase();
+            case STRING -> value;
             case TEXT -> value.replace("\n", "<br/>");
             case NUMBER -> value.replaceAll("[^\\d\\.]", "");
-            case CURRENCY_CODE, LANGUAGE_CODE, COUNTRY_CODE -> value.toUpperCase();
-            default -> value;
+            default -> value.replace(" ", "").toUpperCase();
         };
     }
 

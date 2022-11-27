@@ -116,9 +116,9 @@ app:
             - EN
         - name: reference
           default-map: reference
-          label: Reference
+          label: QR reference or a Creditor Reference (ISO 11649)
           required: false
-          type: STRING
+          type: REFERENCE
         - name: unstructuredMessage
           default-map: unstructured_message
           label: Unstructured message (reason)
