@@ -67,15 +67,34 @@
     // *****************************************************************************************************************
     // Manage form
     // *****************************************************************************************************************
-    const addButtons = () => {
+    const createGenerateButton = (loading = false) => {
+        const buttonText = "Generate bills";
+
         const generateBillsButton = document.createElement("button");
-        generateBillsButton.classList.add("w-103");
         generateBillsButton.classList.add("btn");
         generateBillsButton.classList.add("btn-primary");
-        generateBillsButton.classList.add("btn-lg");
         generateBillsButton.setAttribute("type", "submit");
-        generateBillsButton.innerHTML = "Generate bills";
-        mapSection.append(generateBillsButton);
+
+        if (loading) {
+            const spinnerElement = document.createElement("span");
+            spinnerElement.classList.add("spinner-border");
+            spinnerElement.classList.add("spinner-border-sm");
+            spinnerElement.setAttribute("role", "status");
+
+            generateBillsButton.disabled = true;
+            generateBillsButton.append(spinnerElement);
+            generateBillsButton.append(buttonText);
+        } else {
+            generateBillsButton.innerHTML = buttonText;
+        }
+
+        return generateBillsButton;
+    }
+
+    const addButtons = () => {
+        const generateButtonContainer = document.createElement("div");
+        generateButtonContainer.append(createGenerateButton());
+        mapSection.append(generateButtonContainer);
     }
 
     const addNewGroup = (name, label, elements, addLineAtEnd = true) => {
@@ -215,6 +234,9 @@
             e.preventDefault();
         }
 
+        const generateButtonContainer = mapSection.lastElementChild;
+        generateButtonContainer.replaceChildren(createGenerateButton(true));
+
         if (billForm.checkValidity()) {
             const fieldsMap = groups.flatMap(({fields}) => fields.map(({name}) => ({
                 [name]: {
@@ -250,6 +272,8 @@
                 downloadZipButton.click();
             }
         }
+
+        generateButtonContainer.replaceChildren(createGenerateButton());
 
         // You must return false to prevent the default form behavior
         return false;
