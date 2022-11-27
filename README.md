@@ -4,7 +4,6 @@ Web application to generate a list of bills based on CSV file with the ability t
 
 ## Todo
 
-- [ ] Dockerfile, docker-compose and pipeline configuration
 - [ ] [UI] Show exception
 - [ ] Add tests, tests and more tests :D
 - [ ] [UI] Add next to each field an input to set a static value (same field for each bill)
