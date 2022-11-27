@@ -13,7 +13,7 @@
     <groupId>ch.dafo90</groupId>
     <artifactId>swiss-qr-bill-generator</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>${artifactId}</name>
+    <name>${project.artifactId}</name>
     <description>Swiss QR Bill Generator</description>
 
     <properties>
@@ -21,8 +21,8 @@
 
         <sonar.organization>dafo90</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-        <sonar.sources>src/main/java,src/main/resources</sonar.sources>
-        <sonar.projectKey>${sonar.organization}_${artifactId}</sonar.projectKey>
+        <sonar.sources>${project.basedir}/src/main/java,${project.basedir}/src/main/resources</sonar.sources>
+        <sonar.projectKey>${sonar.organization}_${project.artifactId}</sonar.projectKey>
 
         <spring-cloud.version>2021.0.5</spring-cloud.version>
         <springdoc-openapi-ui.version>1.6.12</springdoc-openapi-ui.version>
