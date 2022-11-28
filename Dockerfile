@@ -16,7 +16,7 @@ RUN groupadd --gid 1000 spring \
 RUN mkdir /data \
     && chown -R spring:spring /data
 
-COPY --chown=spring:spring /target/app.jar ./
+COPY --chown=spring:spring target/app.jar ./
 COPY --chown=spring:spring entrypoint.sh ./
 
 RUN chmod +x ./entrypoint.sh
