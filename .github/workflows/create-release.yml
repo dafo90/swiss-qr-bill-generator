@@ -53,6 +53,4 @@ jobs:
         with:
           push: true
           # By my personal convention same owner and project name in each system (GitHub and Docker Hub)
-          tags:
-            - ${{ github.repository }}:latest
-            - ${{ github.repository }}:${{  github.ref_name }}
+          tags: ${{ github.repository }}:latest,${{ github.repository }}:${{  github.ref_name }}
