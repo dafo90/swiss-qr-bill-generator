@@ -206,7 +206,7 @@
                         <developmentBranch>master</developmentBranch>
                         <productionBranch>releases</productionBranch>
                         <featureBranchPrefix>feat-</featureBranchPrefix>
-                        <versionTagPrefix/>
+                        <versionTagPrefix>v</versionTagPrefix>
                         <origin>origin</origin>
                     </gitFlowConfig>
                     <skipTestProject>true</skipTestProject>
