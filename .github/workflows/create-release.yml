@@ -27,15 +27,6 @@ jobs:
       - name: Build with Maven
         run: mvn --batch-mode --update-snapshots package
 
-      - name: Create Release
-        uses: "marvinpinto/action-automatic-releases@v1.2.1"
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          prerelease: false
-          files: |
-            LICENSE
-            target/app.jar
-
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
@@ -54,3 +45,12 @@ jobs:
           push: true
           # By my personal convention same owner and project name in each system (GitHub and Docker Hub)
           tags: ${{ github.repository }}:latest,${{ github.repository }}:${{  github.ref_name }}
+
+      - name: Create Release
+        uses: "marvinpinto/action-automatic-releases@v1.2.1"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: false
+          files: |
+            LICENSE
+            target/app.jar
