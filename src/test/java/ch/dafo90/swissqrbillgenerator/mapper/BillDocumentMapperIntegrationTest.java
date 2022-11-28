@@ -6,6 +6,7 @@ import ch.dafo90.swissqrbillgenerator.exception.ValidationException;
 import ch.dafo90.swissqrbillgenerator.model.Document;
 import ch.dafo90.swissqrbillgenerator.model.FieldMap;
 import ch.dafo90.swissqrbillgenerator.model.FieldType;
+import ch.dafo90.swissqrbillgenerator.model.PdfBill;
 import net.codecrete.qrbill.generator.Bill;
 import net.codecrete.qrbill.generator.GraphicsFormat;
 import net.codecrete.qrbill.generator.OutputSize;
@@ -65,7 +66,7 @@ class BillDocumentMapperIntegrationTest extends BaseIntegrationTest {
 
     @ParameterizedTest
     @CsvFileSource(resources = "/data.csv", numLinesToSkip = 1)
-    void toBillPdf_smokeTest(@AggregateWith(AggregateBillDataRowWithMap.class) Map<String, String> row) throws IOException {
+    void toBillPdf(@AggregateWith(AggregateBillDataRowWithMap.class) Map<String, String> row) throws IOException {
         // Creating PDF document object
         PDDocument document = new PDDocument();
 
@@ -78,7 +79,12 @@ class BillDocumentMapperIntegrationTest extends BaseIntegrationTest {
         document.close();
         byte[] emptyPdf = os.toByteArray();
 
-        billDocumentMapper.toPdfBill(emptyPdf, row, AggregateBillDataRowWithMap.getFieldMap());
+        PdfBill pdfBill = billDocumentMapper.toPdfBill(emptyPdf, row, AggregateBillDataRowWithMap.getFieldMap());
+        assertNotNull(pdfBill);
+        assertNotNull(pdfBill.getFileName());
+        assertTrue(pdfBill.getFileName().endsWith(".pdf"));
+        assertNotNull(pdfBill.getPdf());
+        assertTrue(pdfBill.getPdf().length > 0);
     }
 
     @ParameterizedTest
