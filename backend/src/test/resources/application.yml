@@ -1,0 +1,202 @@
+spring:
+  application:
+    name: Unit Test
+  mvc:
+    format:
+      date: iso
+      date-time: iso
+      time: iso
+
+app:
+  groups:
+    - name: document
+      label: Document
+      fields:
+        - name: salutation
+          default-map: salutation
+          label: Salutation
+          required: false
+          type: STRING
+          allow-static-value: true
+        - name: text
+          default-map: text
+          label: Text
+          required: true
+          required-text: Valid text is required.
+          type: TEXT
+          allow-static-value: true
+        - name: signatureTitle1
+          default-map: signature_title_1
+          label: First signature title
+          required: false
+          type: STRING
+          allow-static-value: true
+        - name: signatureName1
+          default-map: signature_name_1
+          label: First signature name
+          required: false
+          type: STRING
+          allow-static-value: true
+        - name: signatureTitle2
+          default-map: signature_title_2
+          label: Second signature title
+          required: false
+          type: STRING
+          allow-static-value: true
+        - name: signatureName2
+          default-map: signature_name_2
+          label: Second signature name
+          required: false
+          type: STRING
+          allow-static-value: true
+        - name: closure
+          default-map: closure
+          label: Closure
+          required: false
+          type: STRING
+          allow-static-value: true
+
+    - name: bill
+      label: Bill
+      fields:
+        - name: account
+          default-map: account
+          label: Account, IBAN from Switzerland or Liechtenstein only
+          required: true
+          required-text: Valid IBAN is required.
+          type: IBAN
+          allow-static-value: true
+        - name: amount
+          default-map: amount
+          label: Amount
+          required: false
+          required-text: Valid amount is required.
+          type: NUMBER
+          allow-static-value: true
+        - name: currency
+          default-map: currency
+          label: Currency code (ISO 4217), CHF or EUR only
+          required: false
+          type: CURRENCY_CODE
+          default-value: CHF
+          options:
+            - CHF
+            - EUR
+          allow-static-value: true
+        - name: language
+          default-map: language
+          label: 'Language code (ISO 639-1), one of: DE, FR, IT, RM, EN'
+          required: false
+          type: LANGUAGE_CODE
+          default-value: IT
+          options:
+            - IT
+            - DE
+            - FR
+            - RM
+            - EN
+          allow-static-value: true
+        - name: reference
+          default-map: reference
+          label: QR reference or a Creditor Reference (ISO 11649)
+          required: false
+          type: REFERENCE
+          allow-static-value: false
+        - name: unstructuredMessage
+          default-map: unstructured_message
+          label: Unstructured message (reason)
+          required: false
+          type: STRING
+          allow-static-value: true
+    - name: creditor
+      label: Creditor
+      fields:
+        - name: creditorName
+          default-map: creditor_name
+          label: Name
+          required: true
+          required-text: Valid name is required.
+          type: STRING
+          allow-static-value: true
+        - name: creditorStreet
+          default-map: creditor_street
+          label: Street
+          required: true
+          required-text: Valid street is required.
+          type: STRING
+          allow-static-value: true
+        - name: creditorLocality
+          default-map: creditor_locality
+          label: Locality
+          required: true
+          required-text: Valid locality is required.
+          type: STRING
+          allow-static-value: true
+        - name: creditorCountry
+          default-map: creditor_country
+          label: Country (ISO 3166-1 alpha-2)
+          required: false
+          type: COUNTRY_CODE
+          default-value: CH
+          allow-static-value: true
+        - name: creditorEmail
+          default-map: creditor_email
+          label: Email
+          required: false
+          type: EMAIL
+          allow-static-value: true
+        - name: creditorWebsite
+          default-map: creditor_website
+          label: Website
+          required: false
+          type: URL
+          allow-static-value: true
+        - name: creditorPhoneNumber
+          default-map: creditor_phone_number
+          label: Phone number
+          required: false
+          type: STRING
+          allow-static-value: true
+    - name: debtor
+      label: Debtor
+      fields:
+        - name: debtorTitle
+          default-map: debtor_title
+          label: Title
+          required: false
+          type: STRING
+          allow-static-value: false
+        - name: debtorOrganisation
+          default-map: debtor_Organisation
+          label: Organisation
+          required: false
+          type: STRING
+          allow-static-value: false
+        - name: debtorName
+          default-map: debtor_name
+          label: Name
+          required: true
+          required-text: Valid name is required.
+          type: STRING
+          allow-static-value: false
+        - name: debtorStreet
+          default-map: debtor_street
+          label: Street
+          required: true
+          required-text: Valid street is required.
+          type: STRING
+          allow-static-value: false
+        - name: debtorLocality
+          default-map: debtor_locality
+          label: Locality
+          required: true
+          required-text: Valid locality is required.
+          type: STRING
+          allow-static-value: false
+        - name: debtorCountry
+          default-map: debtor_country
+          label: Country (ISO 3166-1 alpha-2)
+          required: false
+          type: COUNTRY_CODE
+          default-value: CH
+          allow-static-value: true
