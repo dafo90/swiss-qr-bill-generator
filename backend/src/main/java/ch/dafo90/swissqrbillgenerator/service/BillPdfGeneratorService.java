@@ -1,10 +1,7 @@
 package ch.dafo90.swissqrbillgenerator.service;
 
 import ch.dafo90.swissqrbillgenerator.mapper.BillDocumentMapper;
-import ch.dafo90.swissqrbillgenerator.model.BillData;
-import ch.dafo90.swissqrbillgenerator.model.BillsData;
-import ch.dafo90.swissqrbillgenerator.model.Document;
-import ch.dafo90.swissqrbillgenerator.model.PdfBill;
+import ch.dafo90.swissqrbillgenerator.model.*;
 import ch.dafo90.swissqrbillgenerator.model.csv.HeaderMap;
 import ch.dafo90.swissqrbillgenerator.model.csv.Row;
 import ch.dafo90.swissqrbillgenerator.util.HtmlToPdfBuilder;
@@ -30,32 +27,33 @@ public class BillPdfGeneratorService {
     private final TemplateEngine pdfTemplateEngine;
 
     public byte[] generateZippedBills(BillsData billsData) {
+        Base64Image logo = Base64Image.of(billsData.getLogoBase64());
         return prepareZip(
                 billsData.getData()
                         .stream()
-                        .map(row -> generateQrBillPdf(row, billsData.getLogoBase64(), billsData.getHeadersMap()))
+                        .map(row -> generateQrBillPdf(row, logo, billsData.getHeadersMap()))
                         .toList()
         );
     }
 
     public byte[] generateJpgPreview(BillData billData) {
-        String logoBase64 = billData.getLogoBase64();
+        Base64Image logo = Base64Image.of(billData.getLogoBase64());
         Document document = billDocumentMapper.toDocument(billData.getData(), billData.getHeadersMap());
         log.info("Generate preview bill for {}", document.getRecipientName());
-        return PdfToJpgBuilder.convertToJpg(HtmlToPdfBuilder.convertToPdf(loadBillTemplate(logoBase64, document)));
+        return PdfToJpgBuilder.convertToJpg(HtmlToPdfBuilder.convertToPdf(loadBillTemplate(logo, document)));
     }
 
-    private PdfBill generateQrBillPdf(Row row, String logoBase64, List<HeaderMap> headersMap) {
+    private PdfBill generateQrBillPdf(Row row, Base64Image logo, List<HeaderMap> headersMap) {
         Document document = billDocumentMapper.toDocument(row, headersMap);
         log.info("Generate bill for {}", document.getRecipientName());
-        byte[] pdfDocument = HtmlToPdfBuilder.convertToPdf(loadBillTemplate(logoBase64, document));
+        byte[] pdfDocument = HtmlToPdfBuilder.convertToPdf(loadBillTemplate(logo, document));
         return billDocumentMapper.toPdfBill(pdfDocument, row, headersMap);
     }
 
-    private String loadBillTemplate(String logoBase64, Document document) {
+    private String loadBillTemplate(Base64Image logo, Document document) {
         Context ctx = new Context();
         ctx.setVariable("document", document);
-        ctx.setVariable("logoBase64", logoBase64);
+        ctx.setVariable("logoBase64", logo.getDataUrl());
         return pdfTemplateEngine.process("bill-document", ctx);
     }
 
