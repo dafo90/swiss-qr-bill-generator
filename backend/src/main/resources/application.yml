@@ -7,9 +7,12 @@ server:
     include-exception: false
 
 logging:
+  pattern:
+    level: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'
   level:
-    "[org.springframework]": INFO
-    "[ch.dafo90.swissqrbillgenerator]": INFO
+    org.springframework: info
+    ch.dafo90.swissqrbillgenerator.configuration.RequestLoggingFilterConfig: debug
+    ch.dafo90.swissqrbillgenerator: info
 
 springdoc:
   swagger-ui:

@@ -1,11 +1,11 @@
 package ch.dafo90.swissqrbillgenerator.model;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.xml.bind.DatatypeConverter;
 import org.apache.tika.Tika;
 import org.springframework.util.StringUtils;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.xml.bind.DatatypeConverter;
 import java.util.List;
 import java.util.stream.Stream;
 
