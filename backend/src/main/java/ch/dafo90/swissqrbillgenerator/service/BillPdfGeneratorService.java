@@ -1,9 +1,11 @@
 package ch.dafo90.swissqrbillgenerator.service;
 
+import ch.dafo90.swissqrbillgenerator.exception.ValidationException;
 import ch.dafo90.swissqrbillgenerator.mapper.BillDocumentMapper;
 import ch.dafo90.swissqrbillgenerator.model.*;
 import ch.dafo90.swissqrbillgenerator.model.csv.HeaderMap;
 import ch.dafo90.swissqrbillgenerator.model.csv.Row;
+import ch.dafo90.swissqrbillgenerator.model.validation.ValidationResult;
 import ch.dafo90.swissqrbillgenerator.util.HtmlToPdfBuilder;
 import ch.dafo90.swissqrbillgenerator.util.PdfToJpgBuilder;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +27,13 @@ public class BillPdfGeneratorService {
 
     private final BillDocumentMapper billDocumentMapper;
     private final TemplateEngine pdfTemplateEngine;
+    private final ValidationService validationService;
 
     public byte[] generateZippedBills(BillsData billsData) {
+        ValidationResult validationResult = validationService.validate(billsData);
+        if (!validationResult.isValid()) {
+            throw new ValidationException(validationResult.getValidationMessages());
+        }
         Base64Image logo = Base64Image.of(billsData.getLogoBase64());
         return prepareZip(
                 billsData.getData()
@@ -37,6 +44,10 @@ public class BillPdfGeneratorService {
     }
 
     public byte[] generateJpgPreview(BillData billData) {
+        ValidationResult validationResult = validationService.validate(billData);
+        if (!validationResult.isValid()) {
+            throw new ValidationException(validationResult.getValidationMessages());
+        }
         Base64Image logo = Base64Image.of(billData.getLogoBase64());
         Document document = billDocumentMapper.toDocument(billData.getData(), billData.getHeadersMap());
         log.info("Generate preview bill for {}", document.getRecipientName());

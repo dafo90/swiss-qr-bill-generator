@@ -12,10 +12,8 @@ class Base64ImageTest {
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {" ", "      "})
-    void of_emptyImage(String imageBase64) {
+    void of_validEmptyImage(String imageBase64) {
         Base64Image image = Base64Image.of(imageBase64);
-        assertTrue(image.isValid());
-        assertTrue(image.isEmpty());
         assertNull(image.getDataUrl());
     }
 
@@ -26,8 +24,6 @@ class Base64ImageTest {
     })
     void of_validImage(String imageBase64) {
         Base64Image image = Base64Image.of(imageBase64);
-        assertTrue(image.isValid());
-        assertFalse(image.isEmpty());
         assertNotNull(image.getDataUrl());
     }
 
@@ -39,17 +35,36 @@ class Base64ImageTest {
             // Invalid MediaType
             "data:image/jpeg;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==",
 
-            // Invalid format
-            "data:image/jpeg;base64",
 
-            // Invalid format
-            ":image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
     })
-    void of_invalidImage(String imageBase64) {
-        Base64Image image = Base64Image.of(imageBase64);
-        assertFalse(image.isValid());
-        assertFalse(image.isEmpty());
-        assertNull(image.getDataUrl());
+    @Test
+    void of_invalidFormat() {
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> Base64Image.of(":image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="));
+        assertTrue(ex.getMessage().startsWith("Invalid image: doesn't start with 'data:' (must be a string containing the requested data URL, see https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URLs)"));
+    }
+
+    @Test
+    void of_invalidCommaFormat() {
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> Base64Image.of("data:image/jpeg;iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="));
+        assertTrue(ex.getMessage().startsWith("Invalid image: found 1 comma separated token, expected 2 (must be a string containing the requested data URL, see https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URLs)"));
+    }
+
+    @Test
+    void of_invalidColonFormat() {
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> Base64Image.of("data:data1:image/jpeg,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="));
+        assertTrue(ex.getMessage().startsWith("Invalid image data: found 3 colon separated token, expected 2 (must be a string containing the requested data URL, see https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URLs)"));
+    }
+
+    @Test
+    void of_invalidMediaTypeImage() {
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> Base64Image.of("data:application/json,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="));
+        assertTrue(ex.getMessage().startsWith("Invalid image: unsupported media type 'application/json', 'image/*' only are supported"));
+    }
+
+    @Test
+    void of_invalidMediaType() {
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> Base64Image.of("data:image/jpg,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="));
+        assertTrue(ex.getMessage().startsWith("Invalid image: defined media type 'image/jpg', detected 'image/png'"));
     }
 
     @Test
@@ -57,15 +72,6 @@ class Base64ImageTest {
         String validImageBase64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==";
         Base64Image image = Base64Image.of(validImageBase64);
         assertEquals("data:image/png;charset=US-ASCII,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==", image.getDataUrl());
-    }
-
-    @Test
-    void of_base64PlainText() {
-        String validImageBase64 = "data:text/plain;base64,SGVsbG8gV29ybGQh";
-        Base64Image image = Base64Image.of(validImageBase64);
-        assertFalse(image.isValid());
-        assertFalse(image.isEmpty());
-        assertNull(image.getDataUrl());
     }
 
 }
