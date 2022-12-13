@@ -34,11 +34,10 @@ public class BillPdfGeneratorService {
         if (!validationResult.isValid()) {
             throw new ValidationException(validationResult.getValidationMessages());
         }
-        Base64Image logo = Base64Image.of(billsData.getLogoBase64());
         return prepareZip(
                 billsData.getData()
                         .stream()
-                        .map(row -> generateQrBillPdf(row, logo, billsData.getHeadersMap()))
+                        .map(row -> generateQrBillPdf(row, validationResult.getLogo(), billsData.getHeadersMap()))
                         .toList()
         );
     }
@@ -48,10 +47,9 @@ public class BillPdfGeneratorService {
         if (!validationResult.isValid()) {
             throw new ValidationException(validationResult.getValidationMessages());
         }
-        Base64Image logo = Base64Image.of(billData.getLogoBase64());
         Document document = billDocumentMapper.toDocument(billData.getData(), billData.getHeadersMap());
         log.info("Generate preview bill for {}", document.getRecipientName());
-        return PdfToJpgBuilder.convertToJpg(HtmlToPdfBuilder.convertToPdf(loadBillTemplate(logo, document)));
+        return PdfToJpgBuilder.convertToJpg(HtmlToPdfBuilder.convertToPdf(loadBillTemplate(validationResult.getLogo(), document)));
     }
 
     private PdfBill generateQrBillPdf(Row row, Base64Image logo, List<HeaderMap> headersMap) {

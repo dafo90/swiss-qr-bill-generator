@@ -1,5 +1,6 @@
 package ch.dafo90.swissqrbillgenerator.model;
 
+import ch.dafo90.swissqrbillgenerator.exception.ImageException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
@@ -39,31 +40,31 @@ class Base64ImageTest {
     })
     @Test
     void of_invalidFormat() {
-        RuntimeException ex = assertThrows(RuntimeException.class, () -> Base64Image.of(":image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="));
+        ImageException ex = assertThrows(ImageException.class, () -> Base64Image.of(":image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="));
         assertTrue(ex.getMessage().startsWith("Invalid image: doesn't start with 'data:' (must be a string containing the requested data URL, see https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URLs)"));
     }
 
     @Test
     void of_invalidCommaFormat() {
-        RuntimeException ex = assertThrows(RuntimeException.class, () -> Base64Image.of("data:image/jpeg;iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="));
+        ImageException ex = assertThrows(ImageException.class, () -> Base64Image.of("data:image/jpeg;iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="));
         assertTrue(ex.getMessage().startsWith("Invalid image: found 1 comma separated token, expected 2 (must be a string containing the requested data URL, see https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URLs)"));
     }
 
     @Test
     void of_invalidColonFormat() {
-        RuntimeException ex = assertThrows(RuntimeException.class, () -> Base64Image.of("data:data1:image/jpeg,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="));
+        ImageException ex = assertThrows(ImageException.class, () -> Base64Image.of("data:data1:image/jpeg,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="));
         assertTrue(ex.getMessage().startsWith("Invalid image data: found 3 colon separated token, expected 2 (must be a string containing the requested data URL, see https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URLs)"));
     }
 
     @Test
     void of_invalidMediaTypeImage() {
-        RuntimeException ex = assertThrows(RuntimeException.class, () -> Base64Image.of("data:application/json,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="));
+        ImageException ex = assertThrows(ImageException.class, () -> Base64Image.of("data:application/json,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="));
         assertTrue(ex.getMessage().startsWith("Invalid image: unsupported media type 'application/json', 'image/*' only are supported"));
     }
 
     @Test
     void of_invalidMediaType() {
-        RuntimeException ex = assertThrows(RuntimeException.class, () -> Base64Image.of("data:image/jpg,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="));
+        ImageException ex = assertThrows(ImageException.class, () -> Base64Image.of("data:image/jpg,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="));
         assertTrue(ex.getMessage().startsWith("Invalid image: defined media type 'image/jpg', detected 'image/png'"));
     }
 

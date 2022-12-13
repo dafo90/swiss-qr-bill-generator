@@ -17,8 +17,6 @@ public class ValidationMessage {
     public static final String UNSUPPORTED_COUNTRY_CODE = "unsupported_country_code";
     public static final String UNSUPPORTED_CURRENCY_CODE = "unsupported_currency_code";
     public static final String UNSUPPORTED_LANGUAGE_CODE = "unsupported_language_code";
-    public static final String INVALID_LOGO = "invalid_logo";
-    public static final String UNSUPPORTED_LOGO_MEDIA_TYPE = "unsupported_logo_media_type";
     public static final String INVALID_FIELD_NAME = "invalid_field_name";
     public static final String INVALID_MEDIA_TYPE = "invalid_media_type";
 

@@ -1,5 +1,6 @@
 package ch.dafo90.swissqrbillgenerator.model.validation;
 
+import ch.dafo90.swissqrbillgenerator.model.Base64Image;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -10,12 +11,15 @@ import java.util.List;
 public class ValidationResult {
 
     private final List<ValidationMessage> validationMessages;
+    private final Base64Image logo;
 
-    public ValidationResult(Collection<ValidationMessage> validationMessages) {
+    public ValidationResult(Base64Image logo, Collection<ValidationMessage> validationMessages) {
+        this.logo = logo;
         this.validationMessages = new ArrayList<>(validationMessages);
     }
 
     public ValidationResult() {
+        this.logo = Base64Image.empty();
         this.validationMessages = new ArrayList<>();
     }
 

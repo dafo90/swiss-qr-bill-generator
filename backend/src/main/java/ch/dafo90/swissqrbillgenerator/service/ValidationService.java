@@ -1,6 +1,8 @@
 package ch.dafo90.swissqrbillgenerator.service;
 
+import ch.dafo90.swissqrbillgenerator.exception.ImageException;
 import ch.dafo90.swissqrbillgenerator.mapper.BillDocumentMapper;
+import ch.dafo90.swissqrbillgenerator.model.Base64Image;
 import ch.dafo90.swissqrbillgenerator.model.BillData;
 import ch.dafo90.swissqrbillgenerator.model.BillsData;
 import ch.dafo90.swissqrbillgenerator.model.csv.HeaderMap;
@@ -10,14 +12,11 @@ import ch.dafo90.swissqrbillgenerator.model.validation.ValidationResult;
 import ch.dafo90.swissqrbillgenerator.property.AppProperties;
 import ch.dafo90.swissqrbillgenerator.property.FieldGroupProperties;
 import ch.dafo90.swissqrbillgenerator.property.FieldProperties;
-import ch.dafo90.swissqrbillgenerator.util.MediaTypeUtils;
-import jakarta.xml.bind.DatatypeConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.codecrete.qrbill.generator.Bill;
 import net.codecrete.qrbill.generator.Language;
 import net.codecrete.qrbill.generator.QRBill;
-import org.apache.tika.Tika;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -36,7 +35,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class ValidationService {
 
-    private static final String DEFAULT_MEDIA_TYPE = "text/plain";
+    private static final String LOGO_FIELD_NAME = "logoBase64";
 
     private static final Map<String, String> ERROR_FIELDS = Map.ofEntries(
             Map.entry("currency", FieldProperties.CURRENCY),
@@ -83,15 +82,25 @@ public class ValidationService {
     private final FieldGroupService fieldGroupService;
 
     public ValidationResult validate(BillData billData) {
-        ValidationResult validationResult = new ValidationResult(validateSingleBill(billData.getData(), billData.getHeadersMap()).toList());
-        validateLogoBase64(billData.getLogoBase64()).ifPresent(validationMessage -> validationResult.addMessages(validationMessage));
-        return validationResult;
+        List<ValidationMessage> validationMessages = new ArrayList<>(validateSingleBill(billData.getData(), billData.getHeadersMap()).toList());
+        Base64Image logo = Base64Image.empty();
+        try {
+            logo = Base64Image.of(billData.getLogoBase64());
+        } catch (ImageException ex) {
+            validationMessages.add(new ValidationMessage(LOGO_FIELD_NAME, null, ex.getMessage(), ex.getMessageKey()));
+        }
+        return new ValidationResult(logo, validationMessages);
     }
 
     public ValidationResult validate(BillsData billsData) {
-        ValidationResult validationResult = new ValidationResult(billsData.getData().stream().flatMap(row -> validateSingleBill(row, billsData.getHeadersMap())).toList());
-        validateLogoBase64(billsData.getLogoBase64()).ifPresent(validationMessage -> validationResult.addMessages(validationMessage));
-        return validationResult;
+        List<ValidationMessage> validationMessages = new ArrayList<>(billsData.getData().stream().flatMap(row -> validateSingleBill(row, billsData.getHeadersMap())).toList());
+        Base64Image logo = Base64Image.empty();
+        try {
+            logo = Base64Image.of(billsData.getLogoBase64());
+        } catch (ImageException ex) {
+            validationMessages.add(new ValidationMessage(LOGO_FIELD_NAME, null, ex.getMessage(), ex.getMessageKey()));
+        }
+        return new ValidationResult(logo, validationMessages);
     }
 
     private Stream<ValidationMessage> validateSingleBill(Row row, List<HeaderMap> headersMap) {
@@ -289,69 +298,6 @@ public class ValidationService {
 
     private boolean validateByRegex(String regex, String value) {
         return Pattern.compile(regex).matcher(value).matches();
-    }
-
-    protected Optional<ValidationMessage> validateLogoBase64(String logoBase64) {
-        if (!StringUtils.hasText(logoBase64)) {
-            return Optional.empty();
-        }
-
-        logoBase64 = logoBase64.trim();
-        if (!logoBase64.startsWith("data:")) {
-            return Optional.of(new ValidationMessage(
-                    "logoBase64",
-                    logoBase64,
-                    "Invalid logo (doesn't start with 'data:'), must be a string containing the requested data URL, see https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URLs",
-                    ValidationMessage.INVALID_LOGO)
-            );
-        }
-
-        String[] commaSplit = logoBase64.split(",");
-        if (commaSplit.length != 2) {
-            return Optional.of(new ValidationMessage(
-                    "logoBase64",
-                    logoBase64,
-                    String.format("Invalid logo (found %d comma separated token, expected 2), must be a string containing the requested data URL, see https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URLs", commaSplit.length),
-                    ValidationMessage.INVALID_LOGO)
-            );
-        }
-
-        String data = commaSplit[0].trim();
-        String base64Image = commaSplit[1].trim();
-
-        String[] dataSplit = data.split(":");
-        if (dataSplit.length != 2) {
-            return Optional.of(new ValidationMessage(
-                    "logoBase64",
-                    logoBase64,
-                    String.format("Invalid logo (data: found %d colon separated token, expected 2), must be a string containing the requested data URL, see https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URLs", dataSplit.length),
-                    ValidationMessage.INVALID_LOGO)
-            );
-        }
-
-        String[] dataParams = dataSplit[1].trim().split(";");
-        String mediaType = dataParams.length >= 1 ? dataParams[0].trim().toLowerCase() : DEFAULT_MEDIA_TYPE;
-
-        if (!mediaType.startsWith("image/")) {
-            return Optional.of(new ValidationMessage(
-                    "logoBase64",
-                    logoBase64,
-                    String.format("Invalid logo: unsupported media type '%s', 'image/*' only are supported", mediaType),
-                    ValidationMessage.UNSUPPORTED_LOGO_MEDIA_TYPE)
-            );
-        }
-
-        String detectedMediaType = new Tika().detect(DatatypeConverter.parseBase64Binary(base64Image));
-        if (!MediaTypeUtils.check(mediaType, detectedMediaType)) {
-            return Optional.of(new ValidationMessage(
-                    "logoBase64",
-                    logoBase64,
-                    String.format("Invalid logo: defined media type '%s', detected '%s'", mediaType, detectedMediaType),
-                    ValidationMessage.UNSUPPORTED_LOGO_MEDIA_TYPE)
-            );
-        }
-
-        return Optional.empty();
     }
 
 }
