@@ -1,0 +1,330 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "OpenAPI definition",
+    "version": "v0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/api/v1/csv/convert": {
+      "post": {
+        "tags": [
+          "csv-controller"
+        ],
+        "operationId": "convert",
+        "parameters": [
+          {
+            "name": "separator",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": ","
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "file"
+                ],
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Csv"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/bills/preview": {
+      "post": {
+        "tags": [
+          "bills-controller"
+        ],
+        "operationId": "preview",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BillData"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "image/jpeg": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "byte"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/bills/generate": {
+      "post": {
+        "tags": [
+          "bills-controller"
+        ],
+        "operationId": "generate",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BillsData"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/zip": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "byte"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/field-groups": {
+      "get": {
+        "tags": [
+          "field-group-controller"
+        ],
+        "operationId": "getAll",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FieldGroup"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Csv": {
+        "type": "object",
+        "properties": {
+          "headers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Header"
+            }
+          },
+          "rows": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Row"
+            }
+          }
+        }
+      },
+      "Header": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "columnIndex": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "Row": {
+        "required": [
+          "cells"
+        ],
+        "type": "object",
+        "properties": {
+          "cells": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "BillData": {
+        "required": [
+          "data",
+          "headersMap"
+        ],
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Row"
+          },
+          "headersMap": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HeaderMap"
+            }
+          },
+          "logoBase64": {
+            "type": "string"
+          }
+        }
+      },
+      "HeaderMap": {
+        "required": [
+          "fieldName",
+          "mapWithIndex"
+        ],
+        "type": "object",
+        "properties": {
+          "fieldName": {
+            "type": "string"
+          },
+          "mapWithIndex": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "staticValue": {
+            "type": "string"
+          }
+        }
+      },
+      "BillsData": {
+        "required": [
+          "data",
+          "headersMap"
+        ],
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Row"
+            }
+          },
+          "headersMap": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HeaderMap"
+            }
+          },
+          "logoBase64": {
+            "type": "string"
+          }
+        }
+      },
+      "Field": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "defaultMap": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "requiredText": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "STRING",
+              "IBAN",
+              "REFERENCE",
+              "TEXT",
+              "EMAIL",
+              "URL",
+              "NUMBER",
+              "CURRENCY_CODE",
+              "LANGUAGE_CODE",
+              "COUNTRY_CODE"
+            ]
+          },
+          "defaultValue": {
+            "type": "string"
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "allowStaticValue": {
+            "type": "boolean"
+          }
+        }
+      },
+      "FieldGroup": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Field"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -25,7 +25,7 @@
         <sonar.projectKey>${sonar.organization}_${project.artifactId}</sonar.projectKey>
 
         <micrometer-tracing-bridge-brave.version>1.0.0</micrometer-tracing-bridge-brave.version>
-        <springdoc-openapi-ui.version>1.6.12</springdoc-openapi-ui.version>
+        <springdoc-openapi-starter-webmvc-ui>2.0.2</springdoc-openapi-starter-webmvc-ui>
         <jsoup.version>1.15.3</jsoup.version>
         <org.mapstruct.version>1.5.3.Final</org.mapstruct.version>
         <openhtmltopdf.version>1.0.10</openhtmltopdf.version>
@@ -70,9 +70,8 @@
         </dependency>
         <dependency>
             <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-ui</artifactId>
-            <version>${springdoc-openapi-ui.version}</version>
-            <optional>true</optional>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${springdoc-openapi-starter-webmvc-ui}</version>
         </dependency>
         <dependency>
             <groupId>org.jsoup</groupId>
