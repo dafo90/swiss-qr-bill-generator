@@ -1,0 +1,321 @@
+[
+    {
+        "name": "document",
+        "label": "Document",
+        "fields": [
+            {
+                "name": "salutation",
+                "defaultMap": "salutation",
+                "label": "Salutation",
+                "required": false,
+                "requiredText": null,
+                "type": "STRING",
+                "defaultValue": null,
+                "options": null,
+                "allowStaticValue": true
+            },
+            {
+                "name": "text",
+                "defaultMap": "text",
+                "label": "Text",
+                "required": true,
+                "requiredText": "Valid text is required.",
+                "type": "TEXT",
+                "defaultValue": null,
+                "options": null,
+                "allowStaticValue": true
+            },
+            {
+                "name": "signatureTitle1",
+                "defaultMap": "signature_title_1",
+                "label": "First signature title",
+                "required": false,
+                "requiredText": null,
+                "type": "STRING",
+                "defaultValue": null,
+                "options": null,
+                "allowStaticValue": true
+            },
+            {
+                "name": "signatureName1",
+                "defaultMap": "signature_name_1",
+                "label": "First signature name",
+                "required": false,
+                "requiredText": null,
+                "type": "STRING",
+                "defaultValue": null,
+                "options": null,
+                "allowStaticValue": true
+            },
+            {
+                "name": "signatureTitle2",
+                "defaultMap": "signature_title_2",
+                "label": "Second signature title",
+                "required": false,
+                "requiredText": null,
+                "type": "STRING",
+                "defaultValue": null,
+                "options": null,
+                "allowStaticValue": true
+            },
+            {
+                "name": "signatureName2",
+                "defaultMap": "signature_name_2",
+                "label": "Second signature name",
+                "required": false,
+                "requiredText": null,
+                "type": "STRING",
+                "defaultValue": null,
+                "options": null,
+                "allowStaticValue": true
+            },
+            {
+                "name": "closure",
+                "defaultMap": "closure",
+                "label": "Closure",
+                "required": false,
+                "requiredText": null,
+                "type": "STRING",
+                "defaultValue": null,
+                "options": null,
+                "allowStaticValue": true
+            }
+        ]
+    },
+    {
+        "name": "bill",
+        "label": "Bill",
+        "fields": [
+            {
+                "name": "account",
+                "defaultMap": "account",
+                "label": "Account, IBAN from Switzerland or Liechtenstein only",
+                "required": true,
+                "requiredText": "Valid IBAN is required.",
+                "type": "IBAN",
+                "defaultValue": null,
+                "options": null,
+                "allowStaticValue": true
+            },
+            {
+                "name": "amount",
+                "defaultMap": "amount",
+                "label": "Amount",
+                "required": false,
+                "requiredText": "Valid amount is required.",
+                "type": "NUMBER",
+                "defaultValue": null,
+                "options": null,
+                "allowStaticValue": true
+            },
+            {
+                "name": "currency",
+                "defaultMap": "currency",
+                "label": "Currency code (ISO 4217), CHF or EUR only",
+                "required": false,
+                "requiredText": null,
+                "type": "CURRENCY_CODE",
+                "defaultValue": "CHF",
+                "options": [
+                    "CHF",
+                    "EUR"
+                ],
+                "allowStaticValue": true
+            },
+            {
+                "name": "language",
+                "defaultMap": "language",
+                "label": "Language code (ISO 639-1), one of: DE, FR, IT, RM, EN",
+                "required": false,
+                "requiredText": null,
+                "type": "LANGUAGE_CODE",
+                "defaultValue": "IT",
+                "options": [
+                    "IT",
+                    "DE",
+                    "FR",
+                    "RM",
+                    "EN"
+                ],
+                "allowStaticValue": true
+            },
+            {
+                "name": "reference",
+                "defaultMap": "reference",
+                "label": "QR reference or a Creditor Reference (ISO 11649)",
+                "required": false,
+                "requiredText": null,
+                "type": "REFERENCE",
+                "defaultValue": null,
+                "options": null,
+                "allowStaticValue": false
+            },
+            {
+                "name": "unstructuredMessage",
+                "defaultMap": "unstructured_message",
+                "label": "Unstructured message (reason)",
+                "required": false,
+                "requiredText": null,
+                "type": "STRING",
+                "defaultValue": null,
+                "options": null,
+                "allowStaticValue": true
+            }
+        ]
+    },
+    {
+        "name": "creditor",
+        "label": "Creditor",
+        "fields": [
+            {
+                "name": "creditorName",
+                "defaultMap": "creditor_name",
+                "label": "Name",
+                "required": true,
+                "requiredText": "Valid name is required.",
+                "type": "STRING",
+                "defaultValue": null,
+                "options": null,
+                "allowStaticValue": true
+            },
+            {
+                "name": "creditorStreet",
+                "defaultMap": "creditor_street",
+                "label": "Street",
+                "required": true,
+                "requiredText": "Valid street is required.",
+                "type": "STRING",
+                "defaultValue": null,
+                "options": null,
+                "allowStaticValue": true
+            },
+            {
+                "name": "creditorLocality",
+                "defaultMap": "creditor_locality",
+                "label": "Locality",
+                "required": true,
+                "requiredText": "Valid locality is required.",
+                "type": "STRING",
+                "defaultValue": null,
+                "options": null,
+                "allowStaticValue": true
+            },
+            {
+                "name": "creditorCountry",
+                "defaultMap": "creditor_country",
+                "label": "Country (ISO 3166-1 alpha-2)",
+                "required": false,
+                "requiredText": null,
+                "type": "COUNTRY_CODE",
+                "defaultValue": "CH",
+                "options": null,
+                "allowStaticValue": true
+            },
+            {
+                "name": "creditorEmail",
+                "defaultMap": "creditor_email",
+                "label": "Email",
+                "required": false,
+                "requiredText": null,
+                "type": "EMAIL",
+                "defaultValue": null,
+                "options": null,
+                "allowStaticValue": true
+            },
+            {
+                "name": "creditorWebsite",
+                "defaultMap": "creditor_website",
+                "label": "Website",
+                "required": false,
+                "requiredText": null,
+                "type": "URL",
+                "defaultValue": null,
+                "options": null,
+                "allowStaticValue": true
+            },
+            {
+                "name": "creditorPhoneNumber",
+                "defaultMap": "creditor_phone_number",
+                "label": "Phone number",
+                "required": false,
+                "requiredText": null,
+                "type": "STRING",
+                "defaultValue": null,
+                "options": null,
+                "allowStaticValue": true
+            }
+        ]
+    },
+    {
+        "name": "debtor",
+        "label": "Debtor",
+        "fields": [
+            {
+                "name": "debtorTitle",
+                "defaultMap": "debtor_title",
+                "label": "Title",
+                "required": false,
+                "requiredText": null,
+                "type": "STRING",
+                "defaultValue": null,
+                "options": null,
+                "allowStaticValue": false
+            },
+            {
+                "name": "debtorOrganisation",
+                "defaultMap": "debtor_Organisation",
+                "label": "Organisation",
+                "required": false,
+                "requiredText": null,
+                "type": "STRING",
+                "defaultValue": null,
+                "options": null,
+                "allowStaticValue": false
+            },
+            {
+                "name": "debtorName",
+                "defaultMap": "debtor_name",
+                "label": "Name",
+                "required": true,
+                "requiredText": "Valid name is required.",
+                "type": "STRING",
+                "defaultValue": null,
+                "options": null,
+                "allowStaticValue": false
+            },
+            {
+                "name": "debtorStreet",
+                "defaultMap": "debtor_street",
+                "label": "Street",
+                "required": true,
+                "requiredText": "Valid street is required.",
+                "type": "STRING",
+                "defaultValue": null,
+                "options": null,
+                "allowStaticValue": false
+            },
+            {
+                "name": "debtorLocality",
+                "defaultMap": "debtor_locality",
+                "label": "Locality",
+                "required": true,
+                "requiredText": "Valid locality is required.",
+                "type": "STRING",
+                "defaultValue": null,
+                "options": null,
+                "allowStaticValue": false
+            },
+            {
+                "name": "debtorCountry",
+                "defaultMap": "debtor_country",
+                "label": "Country (ISO 3166-1 alpha-2)",
+                "required": false,
+                "requiredText": null,
+                "type": "COUNTRY_CODE",
+                "defaultValue": "CH",
+                "options": null,
+                "allowStaticValue": true
+            }
+        ]
+    }
+]
