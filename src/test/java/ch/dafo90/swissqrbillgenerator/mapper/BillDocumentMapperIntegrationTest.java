@@ -50,6 +50,8 @@ class BillDocumentMapperIntegrationTest extends BaseIntegrationTest {
         assertEquals(billDocumentMapper.getField(BillDocumentMapper.CREDITOR_WEBSITE, row, fieldMap), document.getSenderWebsite());
         assertEquals(billDocumentMapper.getField(BillDocumentMapper.CREDITOR_PHONE_NUMBER, row, fieldMap), document.getSenderPhoneNumber());
 
+        assertEquals(billDocumentMapper.getField(BillDocumentMapper.DEBTOR_TITLE, row, fieldMap), document.getRecipientTitle());
+        assertEquals(billDocumentMapper.getField(BillDocumentMapper.DEBTOR_ORGANIZATION, row, fieldMap), document.getRecipientOrganization());
         assertEquals(billDocumentMapper.getField(BillDocumentMapper.DEBTOR_NAME, row, fieldMap), document.getRecipientName());
         assertEquals(billDocumentMapper.getField(BillDocumentMapper.DEBTOR_STREET, row, fieldMap), document.getRecipientStreet());
         assertEquals(billDocumentMapper.getField(BillDocumentMapper.DEBTOR_LOCALITY, row, fieldMap), document.getRecipientLocality());

@@ -140,6 +140,16 @@ app:
     - name: debtor
       label: Debtor
       fields:
+        - name: debtorTitle
+          default-map: debtor_title
+          label: Title
+          required: false
+          type: STRING
+        - name: debtorOrganization
+          default-map: debtor_organization
+          label: Organization
+          required: false
+          type: STRING
         - name: debtorName
           default-map: debtor_name
           label: Name

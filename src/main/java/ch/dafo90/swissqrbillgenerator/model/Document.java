@@ -19,6 +19,8 @@ public class Document {
     private String senderWebsite;
     private String senderPhoneNumber;
 
+    private String recipientTitle;
+    private String recipientOrganization;
     private String recipientName;
     private String recipientStreet;
     private String recipientLocality;

@@ -50,6 +50,10 @@
             font-size: 9pt;
         }
 
+        large {
+            font-size: 12pt;
+        }
+
         section {
             margin-bottom: 5mm;
         }
@@ -87,6 +91,7 @@
         .header-content {
             margin-top: 250px;
             margin-left: 50px;
+            width: auto;
         }
 
         header {
@@ -116,6 +121,8 @@
         #sender {
             vertical-align: middle;
             white-space: nowrap;
+            text-align: right;
+            width: 100%;
         }
 
         .logo {
@@ -128,8 +135,8 @@
         }
 
         .crop > img {
-            max-height: 2cm;
-            max-width: 5cm;
+            max-height: 3cm;
+            max-width: 8cm;
             height: auto;
             width: auto;
         }
@@ -211,7 +218,7 @@
                         </div>
                     </td>
                 </th:block>
-                <td id="sender">
+                <td id="sender" class="large">
                     <span th:if="${#strings.isEmpty(document.senderWebsite)}"
                           th:text="${document.senderName}"></span>
                     <a th:unless="${#strings.isEmpty(document.senderWebsite)}" th:href="${document.senderWebsite}"
@@ -235,11 +242,15 @@
     </div>
     <div id="recipient" class="modal">
         <div class="modal-content">
+            <div th:if="${not #strings.isEmpty(document.recipientTitle)}"
+                 th:text="${document.recipientTitle}"></div>
+            <div th:if="${not #strings.isEmpty(document.recipientOrganization)}"
+                 th:text="${document.recipientOrganization}"></div>
             <div th:text="${document.recipientName}"></div>
             <div th:text="${document.recipientStreet}"></div>
             <div th:text="${document.recipientLocality}"></div>
-            <div th:if="${not #strings.isEmpty(document.recipientCountry)}"
-                 th:text="${document.recipientCountry}"></div>
+            <!-- <div th:if="${not #strings.isEmpty(document.recipientCountry)}"
+                 th:text="${document.recipientCountry}"></div> -->
         </div>
     </div>
 </header>
@@ -285,4 +296,3 @@
 </div>
 </body>
 </html>
-
