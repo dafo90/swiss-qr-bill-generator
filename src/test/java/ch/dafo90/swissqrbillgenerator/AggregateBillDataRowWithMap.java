@@ -40,6 +40,8 @@ public class AggregateBillDataRowWithMap implements ArgumentsAggregator {
             BillDocumentMapper.CREDITOR_WEBSITE,
             BillDocumentMapper.CREDITOR_PHONE_NUMBER,
             // Debtor
+            BillDocumentMapper.DEBTOR_TITLE,
+            BillDocumentMapper.DEBTOR_ORGANIZATION,
             BillDocumentMapper.DEBTOR_NAME,
             BillDocumentMapper.DEBTOR_STREET,
             BillDocumentMapper.DEBTOR_LOCALITY,

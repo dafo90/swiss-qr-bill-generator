@@ -51,6 +51,8 @@ public class BillDocumentMapper {
     public static final String CREDITOR_PHONE_NUMBER = "creditorPhoneNumber";
 
     // Debtor
+    public static final String DEBTOR_TITLE = "debtorTitle";
+    public static final String DEBTOR_ORGANIZATION = "debtorOrganization";
     public static final String DEBTOR_NAME = "debtorName";
     public static final String DEBTOR_STREET = "debtorStreet";
     public static final String DEBTOR_LOCALITY = "debtorLocality";
@@ -69,6 +71,8 @@ public class BillDocumentMapper {
                 .senderWebsite(getField(CREDITOR_WEBSITE, row, fieldsMap))
                 .senderPhoneNumber(getField(CREDITOR_PHONE_NUMBER, row, fieldsMap))
 
+                .recipientTitle(getField(DEBTOR_TITLE, row, fieldsMap))
+                .recipientOrganization(getField(DEBTOR_ORGANIZATION, row, fieldsMap))
                 .recipientName(getField(DEBTOR_NAME, row, fieldsMap))
                 .recipientStreet(getField(DEBTOR_STREET, row, fieldsMap))
                 .recipientLocality(getField(DEBTOR_LOCALITY, row, fieldsMap))
