@@ -105,7 +105,10 @@ public class BillDocumentMapper {
         // Setup bill
         Bill bill = new Bill();
         bill.setAccount(getField(ACCOUNT, row, fieldsMap));
-        bill.setAmountFromDouble(Double.parseDouble(getField(AMOUNT, row, fieldsMap)));
+        String amountStr = getField(AMOUNT, row, fieldsMap);
+        if(StringUtils.hasText(amountStr)) {
+            bill.setAmountFromDouble(Double.parseDouble(amountStr));
+        }
         bill.setCurrency(getField(CURRENCY, row, fieldsMap));
 
         // Set creditor
