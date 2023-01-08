@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 public class ValidatorUtils {
 
@@ -50,11 +51,17 @@ public class ValidatorUtils {
     }
 
     private static void validateUrl(String fieldName, String value) {
+        String urlToValidate = startWithProtocol(value) ? value : String.format("http://%s", value);
         try {
-            new URL(value).toURI();
+            new URL(urlToValidate).toURI();
         } catch (MalformedURLException | URISyntaxException ex) {
             throw new ValidationException(String.format("Field '%s' is an invalid URL, please consider to use the extended notation that start with https:// or http:// (rejected value: %s)", fieldName, value), ex);
         }
+    }
+
+    private static boolean startWithProtocol(String value) {
+        String lowerCaseValue = value.toLowerCase();
+        return Stream.of("http://", "https://").anyMatch(lowerCaseValue::startsWith);
     }
 
     private static void validateIban(String fieldName, String value) {

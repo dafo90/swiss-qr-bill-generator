@@ -189,6 +189,7 @@ public class BillDocumentMapper {
             case STRING -> value;
             case TEXT -> value.replace("\n", "<br/>");
             case NUMBER -> value.replaceAll("[^\\d\\.]", "");
+            case EMAIL, URL -> value.replace(" ", "");
             default -> value.replace(" ", "").toUpperCase();
         };
     }
