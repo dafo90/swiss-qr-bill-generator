@@ -46,16 +46,21 @@
             margin: 20px 0
         }
 
-        small {
+        .small {
             font-size: 9pt;
         }
 
-        large {
+        .large {
             font-size: 12pt;
+        }
+
+        .large-sender-name {
+            font-size: 14pt;
         }
 
         section {
             margin-bottom: 5mm;
+            font-size: 10pt;
         }
 
         section:last-child {
@@ -135,8 +140,8 @@
         }
 
         .crop > img {
-            max-height: 3cm;
-            max-width: 8cm;
+            max-height: 1.5cm;
+            max-width: 6cm;
             height: auto;
             width: auto;
         }
@@ -155,9 +160,8 @@
         }
 
         #recipient > .modal-content {
-            background-color: #fefefe;
-            margin-left: 12cm;
-            margin-top: 5.6cm;
+            margin-left: 11cm;
+            margin-top: 5cm;
             /*border: 1px solid #888;*/
             width: 7.5cm;
             height: 2.3cm;
@@ -219,9 +223,9 @@
                     </td>
                 </th:block>
                 <td id="sender" class="large">
-                    <span th:if="${#strings.isEmpty(document.senderWebsite)}"
+                    <span th:if="${#strings.isEmpty(document.senderWebsite)}" class="large-sender-name"
                           th:text="${document.senderName}"></span>
-                    <a th:unless="${#strings.isEmpty(document.senderWebsite)}" th:href="${document.senderWebsite}"
+                    <a th:unless="${#strings.isEmpty(document.senderWebsite)}" class="large-sender-name" th:href="${document.senderWebsite}"
                        th:text="${document.senderName}"></a>
                     <div th:if="${not #strings.isEmpty(document.oneLineSenderAddress())}">
                         <th:block th:text="${document.oneLineSenderAddress()}"/>
@@ -241,7 +245,7 @@
         </table>
     </div>
     <div id="recipient" class="modal">
-        <div class="modal-content">
+        <div class="modal-content large">
             <div th:if="${not #strings.isEmpty(document.recipientTitle)}"
                  th:text="${document.recipientTitle}"></div>
             <div th:if="${not #strings.isEmpty(document.recipientOrganization)}"
