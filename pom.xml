@@ -12,7 +12,7 @@
 
     <groupId>ch.dafo90</groupId>
     <artifactId>swiss-qr-bill-generator</artifactId>
-    <version>0.0.6</version>
+    <version>0.0.7</version>
     <name>${project.artifactId}</name>
     <description>Swiss QR Bill Generator</description>
 
