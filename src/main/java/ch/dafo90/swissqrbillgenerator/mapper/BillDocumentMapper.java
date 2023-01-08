@@ -125,8 +125,9 @@ public class BillDocumentMapper {
 
         // Set debtor
         String debtorName = getField(DEBTOR_NAME, row, fieldsMap);
+        String debtorOrganization= getField(DEBTOR_ORGANIZATION, row, fieldsMap);
         Address debtor = new Address();
-        debtor.setName(debtorName);
+        debtor.setName(StringUtils.hasText(debtorOrganization) ? debtorOrganization : debtorName);
         debtor.setAddressLine1(getField(DEBTOR_STREET, row, fieldsMap));
         debtor.setAddressLine2(getField(DEBTOR_LOCALITY, row, fieldsMap));
         debtor.setCountryCode(getField(DEBTOR_COUNTRY, row, fieldsMap));
