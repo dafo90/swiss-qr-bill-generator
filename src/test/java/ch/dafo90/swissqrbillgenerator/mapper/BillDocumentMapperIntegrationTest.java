@@ -160,10 +160,17 @@ class BillDocumentMapperIntegrationTest extends BaseIntegrationTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = FieldType.class, names = {"IBAN", "REFERENCE", "EMAIL", "URL", "CURRENCY_CODE", "LANGUAGE_CODE", "COUNTRY_CODE"})
-    void sanitizeValue_removeSpaces(FieldType fieldType) {
+    @EnumSource(value = FieldType.class, names = {"IBAN", "REFERENCE", "CURRENCY_CODE", "LANGUAGE_CODE", "COUNTRY_CODE"})
+    void sanitizeValue_removeSpacesAndUpperCase(FieldType fieldType) {
         String value = faker.address().fullAddress();
         assertEquals(value.replace(" ", "").toUpperCase(), billDocumentMapper.sanitizeValue(value, fieldType));
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = FieldType.class, names = {"URL", "EMAIL"})
+    void sanitizeValue_removeSpaces(FieldType fieldType) {
+        String value = faker.address().fullAddress();
+        assertEquals(value.replace(" ", ""), billDocumentMapper.sanitizeValue(value, fieldType));
     }
 
     @ParameterizedTest
