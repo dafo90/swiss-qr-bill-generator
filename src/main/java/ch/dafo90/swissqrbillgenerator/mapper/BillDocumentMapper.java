@@ -125,8 +125,9 @@ public class BillDocumentMapper {
 
         // Set debtor
         String debtorName = getField(DEBTOR_NAME, row, fieldsMap);
+        String debtorOrganization= getField(DEBTOR_ORGANIZATION, row, fieldsMap);
         Address debtor = new Address();
-        debtor.setName(debtorName);
+        debtor.setName(StringUtils.hasText(debtorOrganization) ? debtorOrganization : debtorName);
         debtor.setAddressLine1(getField(DEBTOR_STREET, row, fieldsMap));
         debtor.setAddressLine2(getField(DEBTOR_LOCALITY, row, fieldsMap));
         debtor.setCountryCode(getField(DEBTOR_COUNTRY, row, fieldsMap));
@@ -141,11 +142,11 @@ public class BillDocumentMapper {
         return bill;
     }
 
-    private String generateBillFileName(String debtorName, String reference) {
+    protected String generateBillFileName(String debtorName, String reference) {
         if (StringUtils.hasText(reference)) {
-            return String.format("%s_%s_%d.pdf", debtorName.replace(" ", "-"), reference, new Date().getTime());
+            return String.format("%s_%s_%d.pdf", debtorName.replaceAll("[ \\/]", "-"), reference, new Date().getTime());
         }
-        return String.format("%s_%d.pdf", debtorName.replace(" ", "-"), new Date().getTime());
+        return String.format("%s_%d.pdf", debtorName.replaceAll("[ \\/]", "-"), new Date().getTime());
     }
 
     protected String getField(String fieldName, Map<String, String> row, Map<String, FieldMap> fieldsMap) {

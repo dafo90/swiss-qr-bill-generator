@@ -18,6 +18,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.aggregator.AggregateWith;
 import org.junit.jupiter.params.provider.CsvFileSource;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
@@ -190,6 +191,13 @@ class BillDocumentMapperIntegrationTest extends BaseIntegrationTest {
     void sanitizeValue_replaceAllExceptNumbersAndPeriods(FieldType fieldType) {
         String value = faker.space().distanceMeasurement();
         assertEquals(value.replaceAll("[^\\d\\.]", ""), billDocumentMapper.sanitizeValue(value, fieldType));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"Pinco Pallino", "c/o Pinco Pallino"})
+    void testGenerateFileName(String debtorName){
+        assertFalse(billDocumentMapper.generateBillFileName(debtorName, null).contains(" "));
+        assertFalse(billDocumentMapper.generateBillFileName(debtorName, null).contains("/"));
     }
 
 }
