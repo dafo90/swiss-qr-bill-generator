@@ -20,8 +20,8 @@
         <java.version>17</java.version>
 
         <sonar.organization>dafo90</sonar.organization>
-        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-        <sonar.sources>${project.basedir}/src/main/java,${project.basedir}/src/main/resources</sonar.sources>
+<!--        <sonar.host.url>https://sonarcloud.io</sonar.host.url>-->
+<!--        <sonar.sources>${project.basedir}/src/main/java,${project.basedir}/src/main/resources</sonar.sources>-->
         <sonar.projectKey>${sonar.organization}_${project.artifactId}</sonar.projectKey>
 
         <spring-cloud.version>2021.0.5</spring-cloud.version>
